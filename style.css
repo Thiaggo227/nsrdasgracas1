@@ -1,0 +1,832 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f7f7f7;
+}
+
+/* ==================== HEADER / MENU DE NAVEGAÇÃO ==================== */
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  /* Alterado para RGBA com 80% de opacidade para o blur funcionar */
+  background-color: rgba(247, 247, 247, 0.8); 
+  box-shadow: 0 4px 12px #00000014;
+  padding: 10px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  z-index: 1000;
+  
+  /* ADICIONADO: Efeito de desfoque de fundo (blur) */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Garante compatibilidade com o navegador Safari (iPhone/Mac) */
+}
+
+header h1 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 20px;
+  color: #242424;
+  font-weight: 500;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 30px;
+}
+
+.menu li a i {
+  display: none;
+}
+
+li a {
+  text-decoration: none;
+  color: #242424;
+  font-size: 13px;
+  font-weight: 600;
+  position: relative;
+  padding: 5px 0;
+  transition: color 0.3s ease;
+}
+
+li a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #0073ff;
+  transition: width 0.3s ease;
+}
+
+li a:hover {
+  color: #482707;
+}
+
+li a:hover::after {
+  width: 100%;
+}
+
+.menuHamburguer {
+  display: none;
+  font-size: 22px;
+  color: #242424;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.btnDizimo{
+  background-color: #0073ff;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  padding: 5px 15px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f7f7f7;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.btnDizimo:hover{
+  color: #482707;
+  background-color: #f7f7f7;
+  border: 2px solid #0073ff;
+}
+/* ==================== MODAL DO DÍZIMO ==================== */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #00000066;
+  backdrop-filter: blur(5px); /* Efeito blur de fundo combinando com o Header */
+  z-index: 2000; /* Fica por cima de tudo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Quando adicionamos a classe active, o modal surge suavemente */
+.modal-container.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  width: 90%;
+  max-width: 450px;
+  padding: 35px 25px;
+  border-radius: 2px;
+  box-shadow: 0 10px 30px #00000026;
+  text-align: center;
+  position: relative;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-container.active .modal-content {
+  transform: translateY(0);
+}
+
+/* Botão "X" superior */
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #888888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close-btn:hover {
+  color: #242424;
+}
+
+.modal-icon i {
+  font-size: 45px;
+  color: #0073ff;
+  margin-bottom: 15px;
+}
+
+.modal-content h2 {
+  font-size: 22px;
+  color: #242424;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.modal-text {
+  font-size: 14px;
+  color: #666666;
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+/* Área do PIX/CNPJ */
+.pix-container {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.pix-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0073ff;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.pix-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f1ecfd;
+  padding: 12px 15px;
+  border-radius: 6px;
+  border: 1px dashed #0073ff;
+}
+
+#cnpjTexto {
+  font-family: monospace;
+  font-size: 16px;
+  color: #242424;
+  font-weight: bold;
+}
+
+#btnCopiar {
+  background: none;
+  border: none;
+  color: #0073ff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+#btnCopiar:active {
+  transform: scale(0.9);
+}
+
+/* Alerta de Copiado */
+.copy-alert {
+  font-size: 12px;
+  color: #2e7d32;
+  font-weight: 600;
+  display: block;
+  margin-top: 5px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.copy-alert.show {
+  opacity: 1;
+}
+
+/* Botão principal de fechar embaixo */
+.modal-btn-final {
+  background-color: #0073ff;
+  color: #ffffff;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-btn-final:hover {
+  background-color: #0073ff;
+}
+
+/* ==================== BANNER PRINCIPAL ==================== */
+.imageParish {
+  margin-top: 50px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.imageParish img {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  display: block;
+}
+/* ==================== COMPONENTE PRÓXIMA MISSA ==================== */
+.proxima-missa-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 30px auto 0 auto;
+  padding: 0 20px;
+}
+
+.proxima-missa-card {
+  background-color: #f7f7f7;
+  border-left: 5px solid #0073ff;
+  padding: 20px 25px;
+  border-radius: 2px;
+  box-shadow: 0 4px 12px #00000029;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.proxima-missa-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(0, 115, 255, 0.1);
+  color: #0073ff;
+  padding: 4px 12px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Indicador pulsante de "Ao Vivo" ou "Status Ativo" */
+.ping-animado {
+  width: 8px;
+  height: 8px;
+  background-color: #0073ff;
+  border-radius: 50%;
+  position: relative;
+}
+
+.ping-animado::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #0073ff;
+  border-radius: 50%;
+  animation: pulso-ping 1.5s infinite ease-in-out;
+}
+
+@keyframes pulso-ping {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+#texto-proxima-missa {
+  font-size: 20px;
+  color: #242424;
+  font-weight: 600;
+}
+
+#contador-missa {
+  font-size: 14px;
+  color: #666666;
+  font-weight: 500;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .proxima-missa-container {
+    padding: 0 15px;
+    margin-top: 20px;
+  }
+  #texto-proxima-missa {
+    font-size: 16px;
+  }
+}
+/* ==================== SEÇÃO DA LEITURA DIÁRIA ==================== */
+.leitura {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 2px;
+  text-align: center;
+}
+
+.leitura h2 {
+  font-size: 20px;
+  color: #242424;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.leitura h2 i {
+  color: #242424; /* O ícone da bíblia fica roxo */
+  margin-right: 8px;
+}
+
+.leitura p {
+  text-align: start;
+  font-size: 16px;
+  font-weight: 500;
+  color: #444444;
+  line-height: 1.6;
+}
+
+/* Ajuste sutil para o mobile */
+@media (max-width: 768px) {
+  .leitura {
+    width: 90%;
+    padding: 15px;
+  }
+  .leitura h2 {
+    font-size: 18px;
+  }
+}
+
+/* ==================== HORÁRIO DAS MISSAS ==================== */
+.textHorarioMissa {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.textHorarioMissa h1 {
+  font-size: 25px;
+  color: #242424;
+  display: inline-block;
+  border-bottom: 3px solid #0073ff;
+  padding-bottom: 5px;
+}
+
+.missas {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* CORRIGIDO: Agora cria exatamente 3 colunas iguais */
+  gap: 20px;                             /* Espaçamento perfeito entre os cards */
+  justify-content: center;               /* Centraliza o grid na tela */
+  width: 100%;
+  max-width: 1200px;                     /* Evita que os cards fiquem esticados demais em telas gigantes */
+  margin-left: auto;                     /* Auxilia na centralização do bloco */
+  margin-right: auto;                    /* Auxilia na centralização do bloco */
+}
+
+.horarioMissas {
+  width: 320px;
+  background-color: #f7f7f7;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 4px 12px #00000029;
+  padding: 10px 20px;
+  transition: 0.3s;
+}
+.horarioMissas:hover{
+  box-shadow: 0 6px 18px #00000057;
+}
+
+.horarioMissas h2 {
+  font-size: 19px;
+}
+
+.horarioMissas p {
+  margin-top: 5px;
+  font-size: 16px;
+}
+
+.horarioMissas i {
+  color: #0073ff;
+  font-size: 14px;
+}
+.horarioMissasQuinta{
+  text-align: center;
+  padding: 10px;
+  width: 320px;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 4px 12px #00000029;
+  padding: 10px 20px;
+  background-color: #0073ff;
+  color: #f7f7f7;
+  transition: 0.3s;
+}
+.horarioMissasQuinta:hover{
+  box-shadow: 0 6px 18px #00000057;
+}
+.horarioMissasQuinta h2{
+  font-size: 19px;
+}
+
+/* ==================== BOTÃO FLUTUANTE WHATSAPP ==================== */
+.btn-whatsapp-flutuante {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  background-color: #25d366; /* Verde oficial do WhatsApp */
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  box-shadow: 0 4px 10px #0000004d;
+  z-index: 9999; /* Garante que fique acima de tudo, até do modal */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  text-decoration: none;
+}
+
+/* Efeito ao passar o mouse */
+.btn-whatsapp-flutuante:hover {
+  transform: scale(1.1);
+  background-color: #20ba5a;
+}
+
+/* Animação sutil de pulso para o botão */
+.btn-whatsapp-flutuante::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background-color: #25d366;
+  opacity: 0.5;
+  z-index: -1;
+}
+
+/* Ajuste para telas menores (mobile) não cobrir conteúdos importantes */
+@media (max-width: 768px) {
+  .btn-whatsapp-flutuante {
+    bottom: 55px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    font-size: 38px;
+  }
+}
+
+.container-postagens {
+  width: 100%;
+  max-width: 1400px;
+  margin: 110px auto 40px auto;
+  padding: 0 20px;
+}
+
+.grid-postagens {
+  display: grid;
+  /* Mudado para exibir exatamente 3 colunas em telas grandes */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px; /* Reduzido levemente o espaço para equilibrar o visual */
+  width: 100%;
+}
+
+.post-card {
+  background-color: #f7f7f7;
+  border-radius: 2px; /* Aumentado para 5px para combinar com a imagem */
+  overflow: hidden;
+  box-shadow: 0 4px 12px #00000014;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.post-card:hover {
+  box-shadow: 0 6px 18px #00000057; /* Sombra um pouco mais suave e elegante no hover / / Leve efeito de flutuação profissional */
+}
+
+/* Container da Imagem ajustado para 3 colunas */
+.post-imagem {
+  width: 100%;
+  height: 450px; /* Altura reduzida ideal para o formato de 3 colunas */
+  overflow: hidden;
+  border-radius: 2px;
+  background-color: #f7f7f7; /* Fundo neutro caso o cartaz tenha proporção diferente */
+}
+
+.post-imagem img {
+  width: 100%;
+  height: 100%;
+  /* 'contain' garante que NENHUMA parte do cartaz da paróquia seja cortada */
+  object-fit: contain; 
+  display: block;
+  border-radius: 2px;
+}
+
+/* Conteúdo de texto limpo sem a data e sem espaços vazios */
+.post-conteudo {
+  padding: 15px 18px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.post-legenda {
+  font-size: 15px;
+  color: #444444;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+  font-weight: 500;
+  word-break: break-word;
+}
+.post-tempo {
+  font-size: 12px;
+  color: #888888;
+  font-weight: 500;
+  margin-bottom: 8px; /* Dá um leve espaçamento entre o tempo e o texto do aviso */
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Deixa o mini relógio levemente afastado do texto */
+}
+/* ==================== AJUSTE DO TÍTULO DO MURAL ==================== */
+/* ==================== AJUSTE DO TÍTULO DO MURAL ==================== */
+.titulo-postagens {
+  text-align: center;      /* Centraliza o título e a linha na tela de ponta a ponta */
+  margin-top: 40px;        /* Espaço acima do título */
+  margin-bottom: 40px;     /* Espaço abaixo do título antes dos cards */
+  width: 100%;             /* Garante que o container ocupe a tela toda */
+}
+
+.titulo-postagens h1 {
+  color: #242424;
+  font-size: 25px;
+  font-weight: 600;
+  display: inline-block;        /* Faz o elemento ocupar apenas o tamanho do texto */
+  border-bottom: 3px solid #0073ff; /* Linha de 3px com a cor roxa idêntica às missas */
+  padding-bottom: 5px;          /* Espaço sutil entre o texto e a linha */
+}
+/* ==================== FOOTER (RODAPÉ) ==================== */
+footer {
+  background-color: #f7f7f7;
+  color: #242424;
+  padding: 40px 5% 20px 5%;
+  margin-top: 60px;
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  width: 100%;
+  text-align: center;
+}
+
+.footer-info p {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-info i {
+  color: #0073ff;
+  font-size: 16px;
+}
+
+.footer-bottom {
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.footer-bottom p {
+  font-size: 13px;
+  color: #363636;
+}
+
+/* ==================== RESPONSIVIDADE (CELULAR E TABLET) ==================== */
+@media (max-width: 768px) {
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 17px 15px;
+  }
+
+  header h1 {
+    font-size: 20px;
+    margin-left: 7px;
+  }
+  .btnDizimo{
+    padding: 7px 15px;
+    width: 90%;
+  }
+
+  .menuHamburguer {
+    display: block;
+    z-index: 1001;
+    font-size: 13px;
+    font-weight: 600;
+    color: #242424;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .menuHamburguer i {
+    color: #242424;
+    font-size: 20px;
+    margin-right: 7px;
+  }
+
+  /* Animação do botão fechar */
+  .menuHamburguer.active i {
+    transform: rotate(180deg) scale(1.1);
+  }
+
+  .menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 80px;
+    box-shadow: -5px 0 15px #0000002a; 
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: all 0.4s ease;
+  }
+
+  .menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  .menu li {
+    width: 100%;
+    text-align: left;
+  }
+
+  .menu li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+  }
+
+  .menu li a:hover {
+    background-color: #f1ecfd;
+    color: #0073ff;
+  }
+
+  .menu li a i {
+    font-size: 15px;
+    display: block;
+    color: #242424;
+  }
+  .leitura{
+    padding: 2px;
+  }
+  .leitura h2{
+    font-size: 20px;
+  }
+  .leitura p{
+    text-align: start;
+    margin-left: 10px;
+  }
+
+  .imageParish {
+    padding: 5px;
+  }
+  
+  .imageParish img {
+    height: 340px; /* Altura menor adaptada para telas de celulares */
+  }
+  .textHorarioMissa h1,
+  .titulo-postagens h1 {
+    font-size: 17px;
+    display: inline-block; /* Garante que a linha acompanhe o texto menor no celular */
+  }
+
+  .missas {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr; /* 1 coluna por linha no mobile */
+    gap: 15px;                  /* Espaço entre um card e outro */
+    padding: 0 10px;
+    width: 100%;
+    justify-content: center;    /* Centraliza o grid em si na tela */
+    justify-items: center;      /* Centraliza os cards horizontais dentro do grid */
+  }
+
+  /* Garante que os textos de cada horário fiquem centralizados no mobile */
+  .horarioMissas {
+    width: 100%;
+    max-width: 330px;           /* Mantém os cards em um tamanho bonito e uniforme */
+    text-align: center;         /* Centraliza o título (h2) e o horário (p) */
+  }
+  .horarioMissas h2{
+    font-size: 17px;
+  }
+
+  .horarioMissas h2,
+  .missas p {
+    text-align: center;
+  }
+
+  .grid-postagens {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+  .grid-postagens .post-card {
+    width: 100%;
+    max-width: 350px; /* <-- ALTERE AQUI para o tamanho que achar mais bonito no celular */
+    margin: 0 auto;   /* Garante que o card fique centralizado no ecrã do telemóvel */
+  }
+
+  .post-imagem {
+    height: 440px; /* Leve redução para encaixar perfeitamente em telas móveis */
+  }
+
+  .container-postagens {
+    margin: 60px auto 20px auto;
+  }
+
+  footer {
+    padding: 30px 20px 20px 20px;
+  }
+
+  .footer-info {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .footer-info p {
+    justify-content: center;
+  }
+}
